@@ -128,7 +128,7 @@ componentDidMount(){
   		return(
   			<TableRow>
 		  <form name='client' onSubmit={this.handleUpdateClient}>
-			  <TableRowColumn><TextField hintText="LOGIN" value={this.state.client.login} onChange={this.handleLoginChange} name="login"/></TableRowColumn>
+			  <TableRowColumn><TextField hintText="LOGIN" value={this.state.client.login}  onChange={this.handleLoginChange} name="login"/></TableRowColumn>
 			  <TableRowColumn><TextField hintText="FIRSTNAME" value={this.state.client.firstName} onChange={this.handleFirstNameChange} name="firstname"/></TableRowColumn>
 			  <TableRowColumn><TextField hintText="LASTNAME" value={this.state.client.lastName} onChange={this.handleLastNameChange} name="lastname"/></TableRowColumn>
 			  <TableRowColumn><TextField hintText="PASSWORD" name="password" onChange={this.handlePasswordChange}/></TableRowColumn>
@@ -140,7 +140,10 @@ componentDidMount(){
   	}
 
 	let date=new Date(this.state.client.regDate);
-	date=""+date.getDate()+"."+date.getMonth()+"."+date.getFullYear();
+	if(date)
+		date=""+date.getDate()+"."+date.getMonth()+"."+date.getFullYear();
+	else
+		date="";
 	let del=<FlatButton onClick={()=>this.props.onClick(this.state.client.id)} label="DELETE"/>;
 	if(this.props.role!="ADMIN")
 		del="";
@@ -717,7 +720,7 @@ class Menu extends React.Component{
 	return(
 	  <div>
 		<div>
-		  <FlatButton primary={this.state.primary.client} label="Client" onClick={this.onClickClient}/>
+		  <FlatButton primary={this.state.primary.client}  label="Client" onClick={this.onClickClient}/>
 		  <FlatButton primary={this.state.primary.accounts} label="Accounts" onClick={this.onClickAccounts}/>
 		  <FlatButton primary={this.state.primary.documents} label="Documents" onClick={this.onClickDocuments}/>
 		  <FlatButton label="Logout" onClick={()=>this.props.onClick()}/>

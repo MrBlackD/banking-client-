@@ -715,7 +715,7 @@
 				}
 
 				var date = new Date(this.state.client.regDate);
-				date = "" + date.getDate() + "." + date.getMonth() + "." + date.getFullYear();
+				if (date) date = "" + date.getDate() + "." + date.getMonth() + "." + date.getFullYear();else date = "";
 				var del = _react2.default.createElement(_FlatButton2.default, { onClick: function onClick() {
 						return _this3.props.onClick(_this3.state.client.id);
 					}, label: 'DELETE' });
@@ -905,7 +905,7 @@
 				return _react2.default.createElement(
 					'div',
 					null,
-					_react2.default.createElement(_TextField2.default, { type: 'text', value: this.state.search, hintText: 'SEARCH', name: 'search', onChange: this.handleSearch }),
+					_react2.default.createElement(_TextField2.default, { floatingLabelText: 'SEARCH', type: 'text', value: this.state.search, hintText: 'SEARCH', name: 'search', onChange: this.handleSearch }),
 					_react2.default.createElement(_Divider2.default, null),
 					_react2.default.createElement(
 						_Table.Table,
@@ -1145,7 +1145,7 @@
 					'div',
 					null,
 					newDocument,
-					_react2.default.createElement(_TextField2.default, { type: 'text', value: this.state.search, hintText: 'SEARCH', name: 'search', onChange: this.handleSearch }),
+					_react2.default.createElement(_TextField2.default, { floatingLabelText: 'SEARCH', type: 'text', value: this.state.search, hintText: 'SEARCH', name: 'search', onChange: this.handleSearch }),
 					_react2.default.createElement(_Divider2.default, null),
 					_react2.default.createElement(
 						_Table.Table,
@@ -1296,26 +1296,35 @@
 				if (this.state.action == "update") {
 
 					return _react2.default.createElement(
-						'div',
+						_Table.TableRow,
 						null,
 						_react2.default.createElement(
 							'form',
 							{ name: 'account', onSubmit: this.handleUpdate },
-							'ACCOUNT_ID: ',
-							this.state.account.account_id,
-							_react2.default.createElement('br', null),
-							'CLIENT_ID:',
-							_react2.default.createElement('input', { type: 'text', value: this.state.account.client_id, onChange: this.handleChangeClientId, name: 'client_id' }),
-							_react2.default.createElement('br', null),
-							'BALANCE:',
-							_react2.default.createElement('input', { type: 'text', value: this.state.account.balance, onChange: this.handleChangeBalance, name: 'balance' }),
-							_react2.default.createElement('br', null),
-							_react2.default.createElement('input', { type: 'submit' }),
-							_react2.default.createElement('br', null)
+							_react2.default.createElement(
+								_Table.TableRowColumn,
+								null,
+								this.state.account.account_id
+							),
+							_react2.default.createElement(
+								_Table.TableRowColumn,
+								null,
+								_react2.default.createElement(_TextField2.default, { floatingLabelText: 'CLIENT ID', hintText: 'CLIENT ID', type: 'text', value: this.state.account.client_id, onChange: this.handleChangeClientId, name: 'client_id' })
+							),
+							_react2.default.createElement(
+								_Table.TableRowColumn,
+								null,
+								_react2.default.createElement(_TextField2.default, { floatingLabelText: 'BALANCE', hintText: 'BALANCE', type: 'text', value: this.state.account.balance, onChange: this.handleChangeBalance, name: 'balance' })
+							),
+							_react2.default.createElement(
+								_Table.TableRowColumn,
+								null,
+								_react2.default.createElement(_FlatButton2.default, { label: 'SUBMIT', type: 'submit' })
+							)
 						)
 					);
 				}
-				var update = _react2.default.createElement(_FlatButton2.default, { label: 'UPDAET', onClick: this.onClickUpdate });
+				var update = _react2.default.createElement(_FlatButton2.default, { label: 'UPDATE', onClick: this.onClickUpdate });
 				if (this.props.role != "ADMIN") update = "";
 				if (this.state.action == "show") return _react2.default.createElement(
 					_Table.TableRow,
@@ -1459,7 +1468,7 @@
 				var _this22 = this;
 
 				console.log(this.state.accounts);
-				var clientId = _react2.default.createElement(_TextField2.default, { type: 'text', hintText: 'CLIENT ID', onChange: this.onChangeClientId, value: this.state.clientId });
+				var clientId = _react2.default.createElement(_TextField2.default, { floatingLabelText: 'CLIENT ID', type: 'text', hintText: 'CLIENT ID', onChange: this.onChangeClientId, value: this.state.clientId });
 				var update = "";
 				var newAcc = _react2.default.createElement(_FlatButton2.default, { label: 'NEW ACCOUNT', onClick: this.handleOpen });
 				if (this.props.role != "ADMIN") {
@@ -1489,7 +1498,7 @@
 						},
 						clientId
 					),
-					_react2.default.createElement(_TextField2.default, { type: 'text', value: this.state.search, hintText: 'SEARCH', name: 'search', onChange: this.handleSearch }),
+					_react2.default.createElement(_TextField2.default, { type: 'text', floatingLabelText: 'SEARCH', value: this.state.search, hintText: 'SEARCH', name: 'search', onChange: this.handleSearch }),
 					_react2.default.createElement(_Divider2.default, null),
 					_react2.default.createElement(
 						_Table.Table,
@@ -1527,11 +1536,11 @@
 							null,
 							this.state.accounts.accounts.map(function (account) {
 								for (var k in account) {
-									if (account[k].toString().indexOf(_this22.state.search) != -1) return _react2.default.createElement(Account, { key: account.account_id, accesstoken: _this22.props.accesstoken, account: account, onClick: function onClick() {
+									if (account[k].toString().indexOf(_this22.state.search) != -1) return _react2.default.createElement(Account, { role: _this22.props.role, key: account.account_id, accesstoken: _this22.props.accesstoken, account: account, onClick: function onClick() {
 											return _this22.deleteAccount(account.account_id);
 										} });
 								}
-								if (_this22.state.search == "") return _react2.default.createElement(Account, { key: account.account_id, accesstoken: _this22.props.accesstoken, account: account, onClick: function onClick() {
+								if (_this22.state.search == "") return _react2.default.createElement(Account, { role: _this22.props.role, key: account.account_id, accesstoken: _this22.props.accesstoken, account: account, onClick: function onClick() {
 										return _this22.deleteAccount(account.account_id);
 									} });
 							})
@@ -1657,9 +1666,9 @@
 					{ onSubmit: function onSubmit(e) {
 							_this26.props.onSubmit(e, _this26.state.login, _this26.state.password);
 						} },
-					_react2.default.createElement(_TextField2.default, { type: 'text', name: 'login', hintText: 'LOGIN', value: this.state.login, onChange: this.handleLoginChange }),
+					_react2.default.createElement(_TextField2.default, { type: 'text', floatingLabelText: 'LOGIN', name: 'login', hintText: 'LOGIN', value: this.state.login, onChange: this.handleLoginChange }),
 					_react2.default.createElement('br', null),
-					_react2.default.createElement(_TextField2.default, { type: 'password', name: 'password', hintText: 'PASSWORD', value: this.state.password, onChange: this.handlePasswordChange }),
+					_react2.default.createElement(_TextField2.default, { type: 'password', floatingLabelText: 'PASSWORD', name: 'password', hintText: 'PASSWORD', value: this.state.password, onChange: this.handlePasswordChange }),
 					_react2.default.createElement('br', null),
 					_react2.default.createElement(_FlatButton2.default, { type: 'submit', label: 'SUBMIT' })
 				);
@@ -1680,6 +1689,7 @@
 			_this27.state = {
 				status: "",
 				open: false
+
 			};
 			_this27.handleSubmitReg = _this27.handleSubmitReg.bind(_this27);
 			_this27.handleRequestClose = _this27.handleRequestClose.bind(_this27);
@@ -1699,6 +1709,7 @@
 				}).then(function (response) {
 					console.log(response);
 					if (response.status == "200") _this28.setState({ status: "Success!", open: true });
+					if (response.status == "500") _this28.setState({ status: "All fields are required!", open: true });
 				});
 			}
 		}, {
@@ -1716,13 +1727,13 @@
 					_react2.default.createElement(
 						'form',
 						{ name: 'reg', onSubmit: this.handleSubmitReg },
-						_react2.default.createElement(_TextField2.default, { hintText: 'LOGIN', name: 'login', type: 'text' }),
+						_react2.default.createElement(_TextField2.default, { floatingLabelText: 'LOGIN', errorText: '', hintText: 'LOGIN', name: 'login', type: 'text' }),
 						_react2.default.createElement('br', null),
-						_react2.default.createElement(_TextField2.default, { hintText: 'FIRSTNAME', name: 'firstname', type: 'text' }),
+						_react2.default.createElement(_TextField2.default, { floatingLabelText: 'FIRSTNAME', hintText: 'FIRSTNAME', name: 'firstname', type: 'text' }),
 						_react2.default.createElement('br', null),
-						_react2.default.createElement(_TextField2.default, { hintText: 'LASTNAME', name: 'lastname', type: 'text' }),
+						_react2.default.createElement(_TextField2.default, { floatingLabelText: 'LASTNAME', hintText: 'LASTNAME', name: 'lastname', type: 'text' }),
 						_react2.default.createElement('br', null),
-						_react2.default.createElement(_TextField2.default, { hintText: 'PASSWORD', name: 'password', type: 'password' }),
+						_react2.default.createElement(_TextField2.default, { floatingLabelText: 'PASSWORD', hintText: 'PASSWORD', name: 'password', type: 'password' }),
 						_react2.default.createElement('br', null),
 						_react2.default.createElement(_FlatButton2.default, { label: 'Submit', type: 'submit' })
 					)
@@ -1745,6 +1756,7 @@
 				page: "login",
 				accesstoken: "",
 				role: "",
+				open: false,
 				response: {},
 				primary: {
 					login: true,
@@ -1755,6 +1767,7 @@
 			_this29.onClickLogOut = _this29.onClickLogOut.bind(_this29);
 			_this29.Registration = _this29.Registration.bind(_this29);
 			_this29.Login = _this29.Login.bind(_this29);
+			_this29.handleRequestClose = _this29.handleRequestClose.bind(_this29);
 			return _this29;
 		}
 
@@ -1768,6 +1781,7 @@
 
 				e.preventDefault();
 				console.log(login + " " + password);
+
 				fetch('http://localhost:8080/login?login=' + login + "&password=" + password).then(function (response) {
 					return response.json();
 				}).then(function (json) {
@@ -1775,6 +1789,8 @@
 						_this30.setState({ accesstoken: json.response, role: json.role, page: "client" });
 						console.log(_this30.state.accesstoken);
 						console.log(_this30.state.role);
+					} else {
+						_this30.setState({ open: true });
 					}
 				});
 			}
@@ -1792,6 +1808,11 @@
 			key: 'Login',
 			value: function Login() {
 				this.setState({ page: "login", primary: { login: true, reg: false } });
+			}
+		}, {
+			key: 'handleRequestClose',
+			value: function handleRequestClose() {
+				this.setState({ open: false });
 			}
 		}, {
 			key: 'render',
@@ -1824,6 +1845,11 @@
 					_react2.default.createElement(
 						_Paper2.default,
 						{ style: paperStyle, zDepth: 1, rounded: false },
+						_react2.default.createElement(_Snackbar2.default, {
+							open: this.state.open,
+							message: 'Wrong login/password',
+							autoHideDuration: 4000,
+							onRequestClose: this.handleRequestClose }),
 						_react2.default.createElement(
 							'div',
 							null,

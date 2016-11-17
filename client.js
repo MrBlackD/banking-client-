@@ -15,9 +15,14 @@ let Client=class Client extends React.Component{
 	this.handleLastNameChange=this.handleLastNameChange.bind(this);
 	this.handleFirstNameChange=this.handleFirstNameChange.bind(this);
 	this.handleUpdateClient=this.handleUpdateClient.bind(this);
+
   }
 
 componentDidMount(){
+	if(this.props.client){
+		this.setState({client:this.props.client});
+		return;
+	}
 	console.log("prop "+this.props.accesstoken)
 	fetch('http://localhost:8080/client?accesstoken='+this.props.accesstoken)
 	.then((response)=>{
@@ -31,31 +36,23 @@ componentDidMount(){
 }
 
 	handleLoginChange(e){
-		if(e.target.value=="")
-			return;
 		const newClient=this.state.client;
 		newClient.login=e.target.value;
 		this.setState({client:newClient});
 
 	}
 	handlePasswordChange(e){
-		if(e.target.value=="")
-			return;
 		const newClient=this.state.client;
 		newClient.newPassword=e.target.value;
 		this.setState({client:newClient});
 		console.log(this.state.client);
 	}
 	handleFirstNameChange(e){
-		if(e.target.value=="")
-			return;
 		const newClient=this.state.client;
 		newClient.firstName=e.target.value;
 		this.setState({client:newClient});
 	}
 	handleLastNameChange(e){
-		if(e.target.value=="")
-			return;
 		const newClient=this.state.client;
 		newClient.lastName=e.target.value;
 		this.setState({client:newClient}); 
@@ -63,8 +60,10 @@ componentDidMount(){
 	handleUpdateClient(e){
 		e.preventDefault();
 		console.log("Updating");
-		
-	  	fetch('http://localhost:8080/client/update?accesstoken='+this.props.accesstoken,{method:"POST",
+		let query='http://localhost:8080/client/update?accesstoken=';
+		if(this.props.role=="ADMIN")
+			query='http://localhost:8080/client/'+this.state.client.id+'/update?accesstoken=';
+	  	fetch(query+this.props.accesstoken,{method:"POST",
 	  		body: new FormData(document.forms.client)
 
 	  	}).then((response)=>{
@@ -78,38 +77,68 @@ componentDidMount(){
 		this.setState({action:"update"});
 	}
 
+
+
   render(){
   	if(!this.state)
   		return(<div></div>);
   	if(this.state.action=="update"){
   		return(
+  			<TableRow>
 		  <form name='client' onSubmit={this.handleUpdateClient}>
-			<ul>
-			  <li>LOGIN: <input value={this.state.client.login} onChange={this.handleLoginChange} name="login"/></li>
-			  <li>FIRSTNAME: <input value={this.state.client.firstName} onChange={this.handleFirstNameChange} name="firstname"/></li>
-			  <li>LASTNAME: <input value={this.state.client.lastName} onChange={this.handleLastNameChange} name="lastname"/></li>
-			  <li>PASSWORD: <input name="password" onChange={this.handlePasswordChange}/></li>
-			  <li><input type="submit"/></li>
-			</ul>
+			  <TableRowColumn><TextField hintText="LOGIN" value={this.state.client.login} onChange={this.handleLoginChange} name="login"/></TableRowColumn>
+			  <TableRowColumn><TextField hintText="FIRSTNAME" value={this.state.client.firstName} onChange={this.handleFirstNameChange} name="firstname"/></TableRowColumn>
+			  <TableRowColumn><TextField hintText="LASTNAME" value={this.state.client.lastName} onChange={this.handleLastNameChange} name="lastname"/></TableRowColumn>
+			  <TableRowColumn><TextField hintText="PASSWORD" name="password" onChange={this.handlePasswordChange}/></TableRowColumn>
+			  <TableRowColumn><FlatButton label="SUBMIT" type="submit"/></TableRowColumn>
+
 		  </form>
+		  </TableRow>
   		)
   	}
 
 	let date=new Date(this.state.client.regDate);
 	date=""+date.getDate()+"."+date.getMonth()+"."+date.getFullYear();
-	return(
+	let del=<FlatButton onClick={()=>this.props.onClick(this.state.client.id)} label="DELETE"/>;
+	if(this.props.role!="ADMIN")
+		del="";
+	if(this.props.role=="ADMIN")
+		return(
 
-	  <div>
-		<ul>
-		  <li>ID: {this.state.client.id}</li>
-		  <li>LOGIN: {this.state.client.login}</li>
-		  <li>FIRSTNAME: {this.state.client.firstName}</li>
-		  <li>LASTNAME: {this.state.client.lastName}</li>
-		  <li>REGISTRATION DATE: {date}</li>
-		  <li><a href="#" onClick={this.onClickUpdate}>Update</a></li>
-		</ul>
-	  </div>
-	  )
+			<TableRow>
+				<TableRowColumn>{this.state.client.id}</TableRowColumn>
+				<TableRowColumn>{this.state.client.login}</TableRowColumn>
+				<TableRowColumn>{this.state.client.firstName}</TableRowColumn>
+				<TableRowColumn>{this.state.client.lastName}</TableRowColumn>
+				<TableRowColumn>{date}</TableRowColumn>
+				<TableRowColumn><FlatButton onClick={this.onClickUpdate} label="UPDATE"/>{del}</TableRowColumn>
+			</TableRow>
+		  )
+	else
+				return(
+			<Table>
+			    <TableHeader displaySelectAll={false}>
+			      <TableRow >
+			        <TableHeaderColumn>ID</TableHeaderColumn>
+			        <TableHeaderColumn>LOGIN</TableHeaderColumn>
+			        <TableHeaderColumn>FIRSTNAME</TableHeaderColumn>
+			        <TableHeaderColumn>LASTNAME</TableHeaderColumn>
+			        <TableHeaderColumn>REGISTRATION DATE</TableHeaderColumn>
+			        <TableHeaderColumn>ACTIONS</TableHeaderColumn>
+			      </TableRow>
+			    </TableHeader>
+			     <TableBody displayRowCheckbox={false}>
+			<TableRow >
+				<TableRowColumn>{this.state.client.id}</TableRowColumn>
+				<TableRowColumn>{this.state.client.login}</TableRowColumn>
+				<TableRowColumn>{this.state.client.firstName}</TableRowColumn>
+				<TableRowColumn>{this.state.client.lastName}</TableRowColumn>
+				<TableRowColumn>{date}</TableRowColumn>
+				<TableRowColumn>{del}</TableRowColumn>
+			</TableRow>
+			</TableBody>
+			</Table>
+		  )
   }
 }
 
